@@ -7,6 +7,6 @@ import org.springframework.boot.runApplication
 class ApiToCompareCoinsApplication
 
 fun main(args: Array<String>) {
-	
+
 	runApplication<ApiToCompareCoinsApplication>(*args)
 }
