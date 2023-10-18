@@ -1,0 +1,21 @@
+package com.investor.api.projections
+
+import com.investor.api.dtos.HistoricCoinsDTO
+import com.investor.api.dtos.HistoricEmailsDTO
+import com.investor.api.dtos.InvestorDTO
+import com.investor.api.dtos.LoginInvestorDTO
+
+interface InvestorProjection {
+
+    fun singInInvestor(investor: InvestorDTO)
+
+    fun loginInvestor(investor: LoginInvestorDTO):InvestorDTO
+
+    fun listHistoricEmails(investor: InvestorDTO): HistoricEmailsDTO
+
+    fun listHistoricCoins(investor: InvestorDTO): HistoricCoinsDTO
+
+    fun sendEmailUsers():Boolean
+
+
+}
