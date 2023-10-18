@@ -4,6 +4,7 @@ import com.investor.api.dtos.HistoricCoinsDTO
 import com.investor.api.dtos.HistoricEmailsDTO
 import com.investor.api.dtos.InvestorDTO
 import com.investor.api.dtos.LoginInvestorDTO
+import com.investor.api.entities.Investor
 
 interface InvestorProjection {
 
@@ -11,11 +12,8 @@ interface InvestorProjection {
 
     fun loginInvestor(investor: LoginInvestorDTO):InvestorDTO
 
-    fun listHistoricEmails(investor: InvestorDTO): HistoricEmailsDTO
+    fun InsertCoins(investor: Investor): Boolean
 
-    fun listHistoricCoins(investor: InvestorDTO): HistoricCoinsDTO
-
-    fun sendEmailUsers():Boolean
 
 
 }

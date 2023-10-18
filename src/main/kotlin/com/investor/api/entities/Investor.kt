@@ -11,7 +11,7 @@ class Investor(
     @Column(name = "tb_CoinMain") var coinMain: String = "",
     @Column(name = "tb_CoinSecond") var coinSecond: String = "",
     @OneToOne @JoinColumn(name = "tb_HistoricCoins")
-    var historicCoins: HistoricCoins,
-    @OneToOne @JoinColumn(name = "emails_historic") var historicEmails: HistoricEmails
+    var historicCoins: HistoricCoins?=null,
+    @OneToOne @JoinColumn(name = "emails_historic") var historicEmails: HistoricEmails?=null
 ) {
 }
