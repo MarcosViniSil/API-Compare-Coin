@@ -1,6 +1,7 @@
 package com.investor.api.entities
 
 import jakarta.persistence.*
+import org.hibernate.annotations.Cascade
 
 @Entity(name = "tb_investor")
 class Investor(
@@ -10,7 +11,8 @@ class Investor(
     @Column(name = "tb_password") var password: String = "",
     @Column(name = "tb_CoinMain") var coinMain: String = "",
     @Column(name = "tb_CoinSecond") var coinSecond: String = "",
-    @OneToOne @JoinColumn(name = "tb_HistoricCoins")
+    @OneToOne(cascade = [CascadeType.ALL])
+
     var historicCoins: HistoricCoins?=null,
     @OneToOne @JoinColumn(name = "emails_historic") var historicEmails: HistoricEmails?=null
 ) {
