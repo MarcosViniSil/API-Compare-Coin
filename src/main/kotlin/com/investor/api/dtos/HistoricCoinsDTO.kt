@@ -9,5 +9,5 @@ class HistoricCoinsDTO(val investor: Investor, @ElementCollection var coins: Mut
 
 
 {
-    fun toEntity():HistoricCoins= HistoricCoins(investor=this.investor, coins = this.coins)
+    fun toEntity():HistoricCoins= HistoricCoins(investor=this.investor)
 }

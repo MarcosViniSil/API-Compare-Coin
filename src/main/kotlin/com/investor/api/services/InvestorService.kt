@@ -43,33 +43,31 @@ class InvestorService(
             var coinMain: Coin = Coin(name = investorDTO.coinMain, dateView = dateActual, coinMainApi.ask?.toDouble())
             var coinSecond: Coin = Coin(name = investorDTO.coinSecond, dateView = dateActual, coinSecondApi.ask?.toDouble())
 
-            var coins: MutableList<Coin> = mutableListOf()
-            coins.add(coinMain)
-            coins.add(coinSecond)
+            var nameC: MutableList<String> = mutableListOf()
+            nameC.add(coinMain.name)
+            nameC.add(coinSecond.name)
 
-            var historicCoins: HistoricCoins = HistoricCoins(investor = investor, coins = coins)
+            var dateViewC: MutableList<Date> = mutableListOf()
+            dateViewC.add(dateActual)
+            dateViewC.add(dateActual)
 
-            // Salve o objeto HistoricCoins primeiro
+            var valueC: MutableList<Double?> = mutableListOf()
+            valueC.add(coinMain.value?.toDouble())
+            valueC.add(coinSecond.value?.toDouble())
+
+            var historicCoins: HistoricCoins = HistoricCoins(investor = investor,name=nameC,dateView=dateViewC,value=valueC )
+
             investor.historicCoins = historicCoins
 
-            // Agora você pode salvar o Investor
             investorRepository.save(investor)
             historicCoinsRepository.save(historicCoins)
-
-            // Associe o HistoricCoins ao Investor
-
-
-            // Atualize manualmente o Investor com a referência à HistoricCoin
-
-            // Resto do seu código
-            // ...
 
 
         }
 
     }
 
-fun findHistoric()=historicCoinsRepository.findAll()
+fun findHistoric()=investorRepository.findById(1L)
 
     override fun loginInvestor(investor: LoginInvestorDTO): InvestorDTO {
         TODO("Not yet implemented")
@@ -108,7 +106,7 @@ fun findHistoric()=historicCoinsRepository.findAll()
             val jsonWithoutCoin = jsonPart.replace("\"$stringRemove\":", "")
 
             val objectMapper: ObjectMapper = ObjectMapper()
-            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL) // Ignora campos nulos
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
             val currency: ReturnJsonApi = objectMapper.readValue(jsonWithoutCoin, ReturnJsonApi::class.java)
             return currency
 

@@ -1,5 +1,6 @@
 package com.investor.api.entities
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.*
 import org.hibernate.annotations.Cascade
 
@@ -11,9 +12,9 @@ class Investor(
     @Column(name = "tb_password") var password: String = "",
     @Column(name = "tb_CoinMain") var coinMain: String = "",
     @Column(name = "tb_CoinSecond") var coinSecond: String = "",
-    @OneToOne(cascade = [CascadeType.ALL])
-
+    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @JsonBackReference
     var historicCoins: HistoricCoins?=null,
-    @OneToOne @JoinColumn(name = "emails_historic") var historicEmails: HistoricEmails?=null
+    @OneToOne @JoinColumn(name = "emails_historic")  var historicEmails: HistoricEmails?=null
 ) {
 }
