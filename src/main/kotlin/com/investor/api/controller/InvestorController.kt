@@ -5,12 +5,13 @@ import com.investor.api.dtos.InvestorDTO
 import com.investor.api.entities.Coin
 import com.investor.api.entities.HistoricCoins
 import com.investor.api.entities.Investor
+import com.investor.api.services.EmailService
 import com.investor.api.services.InvestorService
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
-class InvestorController(private val investorservice:InvestorService) {
+class InvestorController(private val investorservice:InvestorService,private val emailservice:EmailService) {
     @PostMapping("/sigIn")
     fun getCoin(@RequestBody investor: InvestorDTO){
         investorservice.singInInvestor(investor)
@@ -18,8 +19,8 @@ class InvestorController(private val investorservice:InvestorService) {
     }
 
     @GetMapping("/u")
-    fun teste(): Optional<Investor> {
-        return investorservice.findHistoric()
+    fun teste(){
+
     }
 
 }

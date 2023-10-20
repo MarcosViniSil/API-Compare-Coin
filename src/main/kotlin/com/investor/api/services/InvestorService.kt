@@ -32,7 +32,7 @@ class InvestorService(
 
             val investor: Investor = Investor(
                 name = investorDTO.name, email = investorDTO.email, password = investorDTO.password,
-                coinMain = investorDTO.coinMain, coinSecond = investorDTO.coinSecond
+                coinMainName = investorDTO.coinMain, coinSecondName = investorDTO.coinSecond
             )
 
             var coinMainApi: ReturnJsonApi = this.testApiReturn(investorDTO.coinMain)
@@ -58,7 +58,8 @@ class InvestorService(
             var historicCoins: HistoricCoins = HistoricCoins(investor = investor,name=nameC,dateView=dateViewC,value=valueC )
 
             investor.historicCoins = historicCoins
-
+            investor.coinMainPrice=coinMainApi.ask?.toDouble()
+            investor.coinSecondPrice=coinSecondApi.ask?.toDouble()
             investorRepository.save(investor)
             historicCoinsRepository.save(historicCoins)
 
