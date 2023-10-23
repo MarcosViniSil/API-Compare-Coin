@@ -20,7 +20,7 @@ class InvestorController(private val investorservice:InvestorService,private val
 
     @GetMapping("/u")
     fun teste(){
-
+      emailservice.sendEmailInvestors()
     }
 
 }

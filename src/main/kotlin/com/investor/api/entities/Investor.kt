@@ -17,6 +17,8 @@ class Investor(
     @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
     @JsonBackReference
     var historicCoins: HistoricCoins?=null,
-    @OneToOne @JoinColumn(name = "emails_historic")  var historicEmails: HistoricEmails?=null
+    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @JsonBackReference
+     var historicEmails: HistoricEmails?=null
 ) {
 }

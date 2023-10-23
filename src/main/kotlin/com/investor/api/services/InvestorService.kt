@@ -35,8 +35,8 @@ class InvestorService(
                 coinMainName = investorDTO.coinMain, coinSecondName = investorDTO.coinSecond
             )
 
-            var coinMainApi: ReturnJsonApi = this.testApiReturn(investorDTO.coinMain)
-            var coinSecondApi: ReturnJsonApi = this.testApiReturn(investorDTO.coinSecond)
+            var coinMainApi: ReturnJsonApi = this.returnAPI(investorDTO.coinMain)
+            var coinSecondApi: ReturnJsonApi = this.returnAPI(investorDTO.coinSecond)
 
             val dateActual = Date(Calendar.getInstance().timeInMillis)
 
@@ -75,8 +75,6 @@ fun findHistoric()=investorRepository.findById(1L)
     }
 
     override fun InsertCoins(investor: Investor): Boolean {
-
-        var historicEmails: HistoricCoinsDTO=HistoricCoinsDTO(investor=investor,)
         return false;
     }
 
@@ -96,7 +94,7 @@ fun findHistoric()=investorRepository.findById(1L)
 
     }
 
-    fun testApiReturn(currency: String):ReturnJsonApi {
+    fun returnAPI(currency: String):ReturnJsonApi {
         println(currency)
         val stringRemove:String=currency+"BRL"
         val inputJson:String =coinAPI.getCurrency(currency)
