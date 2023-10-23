@@ -1,13 +1,29 @@
 package com.investor.api.entities
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.*
 import java.sql.Date
 
-@Embeddable
+@Entity
+@Table(name="tb_Coin")
 class Coin (
-    @Column var name:String,
-    @Column var dateView:Date,
-    @Column var value:Double?
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
+
+    @Column(name = "tb_name")
+    var name:String?="",
+
+    @Column(name="tb_date")
+    var dateView:Date?=null,
+
+    @Column (name="tb_value")
+    var value:Double?=null,
+
+    @ManyToOne
+    @JsonBackReference
+    var historic:HistoricCoins?=null
+
 
 
 ) {

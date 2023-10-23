@@ -1,8 +1,10 @@
 package com.investor.api.services
 
 
+import com.investor.api.entities.Email
 import com.investor.api.entities.HistoricEmails
 import com.investor.api.entities.Investor
+import com.investor.api.repositories.EmailRepository
 import com.investor.api.repositories.HistoricEmailsRepository
 import com.investor.api.repositories.InvestorRepository
 import org.springframework.mail.MailException
@@ -15,8 +17,9 @@ import java.util.*
 @Service
 class EmailService(
     private val investorRepository: InvestorRepository,
-    private val emailRepository: HistoricEmailsRepository,
-    private val sendEmail: JavaMailSender
+    private val historicEmailRepository: HistoricEmailsRepository,
+    private val sendEmail: JavaMailSender,
+    private val emailRepository: EmailRepository
 ) {
     fun sendEmail(dataInvestor: Investor): Boolean {
         var aboutEmail: List<String> = textEmail(dataInvestor)
@@ -28,37 +31,33 @@ class EmailService(
         msg.setText(aboutEmail[0])
 
         try {
-            //sendEmail.send(msg)
-            var test:List<HistoricEmails> =emailRepository.findAll()
-            var historicById: HistoricEmails
-            try {
-                historicById = emailRepository.findById(dataInvestor.id!!).get()
-            }catch(e:NoSuchElementException){
-                historicById=HistoricEmails(investor = dataInvestor)
+
+
+            // Verifique se o histórico de e-mails já existe
+            var historicEmails = dataInvestor.historicEmails
+
+            if (historicEmails == null) {
+                historicEmails = HistoricEmails()
+                historicEmails.investor = dataInvestor
+                dataInvestor.historicEmails = historicEmails
             }
-            var listCodeEmail:MutableList<String>? = emailRepository.listAllCodes(dataInvestor.id)
-            var listMessagesEmail:MutableList<String>? = emailRepository.listAllMessages(dataInvestor.id)
-            var listDatesEmail:MutableList<Date>? = emailRepository.listAllDates(dataInvestor.id)
 
-            listCodeEmail?.add((1..999_999_999_999_999).random().toString())
-            listMessagesEmail?.add(aboutEmail[1])
-            listDatesEmail?.add(Date(Calendar.getInstance().timeInMillis))
+            // Crie o novo e-mail
+            val newEmail = Email(
+                code = (1..999_999_999_999_999).random(),
+                message = aboutEmail[1],
+                dateEmail = Date(Calendar.getInstance().timeInMillis),
+                historice = historicEmails
+            )
 
-            historicById.id=dataInvestor.id
-            historicById.investor=dataInvestor
-            historicById.codeEmail=listCodeEmail
-            historicById.message=listMessagesEmail
-            historicById.dateEmail=listDatesEmail
+            val emails = historicEmails.emails ?: mutableListOf()
+            emails.add(newEmail)
+            historicEmails.emails = emails
 
-            dataInvestor.historicEmails=historicById
+            // Associe o histórico de e-mails atualizado ao investidor
+            dataInvestor.historicEmails = historicEmails
 
             investorRepository.save(dataInvestor)
-            emailRepository.save(historicById)
-
-
-
-
-
             return true
         } catch (ex: MailException) {
             System.err.println(ex.cause)

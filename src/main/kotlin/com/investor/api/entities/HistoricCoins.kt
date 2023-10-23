@@ -8,18 +8,14 @@ import java.sql.Date
 class HistoricCoins(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long? = null,
 
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     var investor: Investor?=null,
-    @Column(name="tb_name")
-    var name: MutableList<String>?=null,
-    @Column(name="tb_dateView")
-    var dateView: MutableList<Date>?=null,
-    @Column(name="tb_value")
-    var value: MutableList<Double?>?=null
+
+    @OneToMany(mappedBy = "historic", cascade = [CascadeType.ALL],fetch = FetchType.EAGER)
+    var coins:MutableList<Coin>? =null
 
 ) {
 
-    fun listCoins()=name
 
 
 }

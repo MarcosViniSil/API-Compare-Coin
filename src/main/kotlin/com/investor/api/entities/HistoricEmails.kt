@@ -8,15 +8,13 @@ import java.sql.Date
 class HistoricEmails(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long? = null,
 
-    @OneToOne(mappedBy = "historicEmails") var investor: Investor,
+    @OneToOne(cascade = [CascadeType.ALL]) var investor: Investor?=null,
 
-    @Column(name="tb_codeEmail")
-    var codeEmail: MutableList<String>?=null,
+    @OneToMany(mappedBy = "historice", cascade = [CascadeType.ALL],fetch = FetchType.EAGER)
+    var emails:MutableList<Email>? =null
 
-    @Column(name="tb_messageEmail")
-    var message: MutableList<String>?=null,
 
-    @Column(name="tb_dateEmail")
-    var dateEmail: MutableList<Date>?=null,
 ) {
+
+
 }

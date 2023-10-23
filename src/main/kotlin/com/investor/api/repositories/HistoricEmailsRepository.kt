@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.Query
 import java.sql.Date
 
 interface HistoricEmailsRepository: JpaRepository<HistoricEmails, Long> {
-    @Query(nativeQuery = true, value = "SELECT tb_code_email FROM tb_historic_emails WHERE id = :idInvestor")
+
+    @Query(nativeQuery = true, value = "select code from tb_historic_emails_emails where tb_historic_emails_id = :idInvestor")
     fun listAllCodes(idInvestor:Long?):MutableList<String>?
 
 

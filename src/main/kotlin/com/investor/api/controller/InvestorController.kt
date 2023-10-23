@@ -4,6 +4,7 @@ import com.investor.api.API.ReturnJsonApi
 import com.investor.api.dtos.InvestorDTO
 import com.investor.api.entities.Coin
 import com.investor.api.entities.HistoricCoins
+import com.investor.api.entities.HistoricEmails
 import com.investor.api.entities.Investor
 import com.investor.api.services.EmailService
 import com.investor.api.services.InvestorService
@@ -19,8 +20,9 @@ class InvestorController(private val investorservice:InvestorService,private val
     }
 
     @GetMapping("/u")
-    fun teste(){
-      emailservice.sendEmailInvestors()
+    fun teste():HistoricEmails?{
+        return investorservice.findHistoric()
+
     }
 
 }
