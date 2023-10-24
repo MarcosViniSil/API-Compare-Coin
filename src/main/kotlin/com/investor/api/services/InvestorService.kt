@@ -78,7 +78,7 @@ class InvestorService(
 
     }
 
-fun findHistoric()=investorRepository.findById(1).get().historicEmails
+fun findHistoric()=investorRepository.findById(2).get().historicCoins
 
     override fun loginInvestor(investor: LoginInvestorDTO): InvestorDTO {
         TODO("Not yet implemented")

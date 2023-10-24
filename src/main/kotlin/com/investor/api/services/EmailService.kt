@@ -19,7 +19,8 @@ class EmailService(
     private val investorRepository: InvestorRepository,
     private val historicEmailRepository: HistoricEmailsRepository,
     private val sendEmail: JavaMailSender,
-    private val emailRepository: EmailRepository
+    private val emailRepository: EmailRepository,
+    private val historicCoins:HistoricCoinsService
 ) {
     fun sendEmail(dataInvestor: Investor): Boolean {
         var aboutEmail: List<String> = textEmail(dataInvestor)
@@ -32,8 +33,8 @@ class EmailService(
 
         try {
 
+            sendEmail.send(msg)
 
-            // Verifique se o histórico de e-mails já existe
             var historicEmails = dataInvestor.historicEmails
 
             if (historicEmails == null) {
@@ -42,7 +43,7 @@ class EmailService(
                 dataInvestor.historicEmails = historicEmails
             }
 
-            // Crie o novo e-mail
+
             val newEmail = Email(
                 code = (1..999_999_999_999_999).random(),
                 message = aboutEmail[1],
@@ -68,7 +69,7 @@ class EmailService(
 
 
     fun sendEmailInvestors() {
-
+        historicCoins.updateCoins()
         var listInvestor: MutableList<Investor> = investorRepository.findAll()
 
         listInvestor.forEach { e ->
@@ -83,6 +84,9 @@ class EmailService(
 
     }
 
+    fun a():HistoricEmails?{
+        return investorRepository.findById(1).get().historicEmails
+    }
 
 
     private fun findPercentInvestor(coinPriceMain: Double?, coinPriceSecond: Double?): Double {
