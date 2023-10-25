@@ -1,9 +1,14 @@
 package com.investor.api.services
 
 
+import com.investor.api.dtos.LoginInvestorDTO
+import com.investor.api.dtos.ReturnHistoricCoinsDTO
+import com.investor.api.dtos.ReturnHistoricEmailsDTO
 import com.investor.api.entities.Email
+import com.investor.api.entities.HistoricCoins
 import com.investor.api.entities.HistoricEmails
 import com.investor.api.entities.Investor
+import com.investor.api.projections.HistoricEmailsProjection
 import com.investor.api.repositories.EmailRepository
 import com.investor.api.repositories.HistoricEmailsRepository
 import com.investor.api.repositories.InvestorRepository
@@ -20,9 +25,9 @@ class EmailService(
     private val historicEmailRepository: HistoricEmailsRepository,
     private val sendEmail: JavaMailSender,
     private val emailRepository: EmailRepository,
-    private val historicCoins:HistoricCoinsService
-) {
-    fun sendEmail(dataInvestor: Investor): Boolean {
+    private val historicCoins: HistoricCoinsService
+) : HistoricEmailsProjection {
+    override fun sendEmail(dataInvestor: Investor): Boolean {
         var aboutEmail: List<String> = textEmail(dataInvestor)
         var subject: String =
             "Email send day : ${Date(Calendar.getInstance().timeInMillis)} about coins: ${dataInvestor.coinMainName} and ${dataInvestor.coinSecondName} "
@@ -55,7 +60,6 @@ class EmailService(
             emails.add(newEmail)
             historicEmails.emails = emails
 
-            // Associe o histórico de e-mails atualizado ao investidor
             dataInvestor.historicEmails = historicEmails
 
             investorRepository.save(dataInvestor)
@@ -68,7 +72,7 @@ class EmailService(
     }
 
 
-    fun sendEmailInvestors() {
+    override fun sendEmailInvestors() {
         historicCoins.updateCoins()
         var listInvestor: MutableList<Investor> = investorRepository.findAll()
 
@@ -84,8 +88,30 @@ class EmailService(
 
     }
 
-    fun a():HistoricEmails?{
-        return investorRepository.findById(1).get().historicEmails
+
+    override fun listEmailsInvestor(loginInvestor: LoginInvestorDTO): ReturnHistoricEmailsDTO? {
+        if (loginInvestor.email != null && loginInvestor.password != null) {
+            var idInvestor: Long? = investorRepository.findIdInvestor(loginInvestor.email, loginInvestor.password)
+            if (idInvestor != null) {
+                var investorLogin: Investor = investorRepository.findById(idInvestor!!).get()
+                var listCoinsInvestor: HistoricEmails? = investorLogin.historicEmails
+                if (listCoinsInvestor?.emails != null) {
+                    var historicEmailsDTO: ReturnHistoricEmailsDTO =
+                        ReturnHistoricEmailsDTO(emails = listCoinsInvestor?.emails)
+                    return historicEmailsDTO
+                }
+
+
+            } else {
+                //TODO exception Investor not exists
+            }
+
+
+        } else {
+            //TODO exception loginInvestor invalid
+        }
+
+        return null
     }
 
 
@@ -149,7 +175,6 @@ class EmailService(
 
         return mutableListOf(stringEmail, percentCoinUser)
     }
-
 
 
 }

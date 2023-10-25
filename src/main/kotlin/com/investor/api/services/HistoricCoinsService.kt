@@ -2,9 +2,13 @@ package com.investor.api.services
 
 import com.investor.api.API.AboutCoinAPI
 import com.investor.api.API.ReturnJsonApi
+import com.investor.api.dtos.HistoricCoinsDTO
+import com.investor.api.dtos.LoginInvestorDTO
+import com.investor.api.dtos.ReturnHistoricCoinsDTO
 import com.investor.api.entities.Coin
 import com.investor.api.entities.HistoricCoins
 import com.investor.api.entities.Investor
+import com.investor.api.projections.HistoricCoinsProjections
 import com.investor.api.repositories.CoinsRepository
 import com.investor.api.repositories.HistoricCoinsRepository
 import com.investor.api.repositories.InvestorRepository
@@ -15,25 +19,22 @@ import java.util.*
 class HistoricCoinsService(
     private val investorRepository: InvestorRepository,
     private val historicCoinsRepository: HistoricCoinsRepository,
-    private val coinAPI: AboutCoinAPI,
     private val coinRepository: CoinsRepository,
     private val investorService: InvestorService
-) {
 
-    fun updateCoinsInvestor(investor: Investor){
+): HistoricCoinsProjections {
+
+    override fun updateCoinsInvestor(investor: Investor){
         var coinMainApi: ReturnJsonApi = investorService.returnAPI(investor.coinMainName)
         var coinSecondApi: ReturnJsonApi = investorService.returnAPI(investor.coinSecondName)
 
-        investor.coinMainName=coinMainApi.name!!
         investor.coinMainPrice=coinMainApi.ask?.toDouble()
-
-        investor.coinSecondName=coinSecondApi.name!!
         investor.coinSecondPrice=coinSecondApi.ask?.toDouble()
 
         this.updateHistoricInvestors(investor)
     }
 
-    fun updateCoins(){
+    override fun updateCoins(){
         var listInvestors:MutableList<Investor> = investorRepository.findAll()
 
         listInvestors.forEach { e -> updateCoinsInvestor(e) }
@@ -41,7 +42,7 @@ class HistoricCoinsService(
 
     }
 
-    fun updateHistoricInvestors(investor: Investor){
+    override fun updateHistoricInvestors(investor: Investor){
         var historicCoinInvestor:HistoricCoins = historicCoinsRepository.findById(investor.id!!).get()
 
         historicCoinInvestor.investor=investor
@@ -69,6 +70,32 @@ class HistoricCoinsService(
 
         investor.historicCoins = historicCoinInvestor
         investorRepository.save(investor)
+    }
+
+    override fun listCoinsInvestor(loginInvestor:LoginInvestorDTO):ReturnHistoricCoinsDTO?{
+        if(loginInvestor.email!=null && loginInvestor.password!=null){
+            var idInvestor:Long? = investorRepository.findIdInvestor(loginInvestor.email,loginInvestor.password)
+            if(idInvestor!=null){
+                var investorLogin:Investor=investorRepository.findById(idInvestor!!).get()
+                var listCoinsInvestor:HistoricCoins? = investorLogin.historicCoins
+                if(listCoinsInvestor?.coins!=null){
+                    var historicCoinsDTO: ReturnHistoricCoinsDTO = ReturnHistoricCoinsDTO(coins = listCoinsInvestor?.coins)
+                    return historicCoinsDTO
+                }
+
+
+
+            }else{
+                //TODO exception Investor not exists
+            }
+
+
+
+        }else{
+            //TODO exception loginInvestor invalid
+        }
+
+         return null
     }
 
 }

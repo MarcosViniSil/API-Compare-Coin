@@ -12,9 +12,8 @@ interface InvestorProjection {
 
     fun singInInvestor(investor: InvestorDTO)
 
-    fun loginInvestor(investor: LoginInvestorDTO):InvestorDTO
+    fun deleteInvestor(loginInvestor: LoginInvestorDTO)
 
-    fun InsertCoins(investor: Investor): Boolean
 
 
 

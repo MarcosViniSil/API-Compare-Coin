@@ -8,8 +8,10 @@ import com.investor.api.API.ReturnJsonApi
 import com.investor.api.dtos.HistoricCoinsDTO
 import com.investor.api.dtos.InvestorDTO
 import com.investor.api.dtos.LoginInvestorDTO
+import com.investor.api.dtos.ReturnHistoricEmailsDTO
 import com.investor.api.entities.Coin
 import com.investor.api.entities.HistoricCoins
+import com.investor.api.entities.HistoricEmails
 import com.investor.api.entities.Investor
 import com.investor.api.projections.InvestorProjection
 import com.investor.api.repositories.CoinsRepository
@@ -25,8 +27,8 @@ import java.util.regex.Pattern
 class InvestorService(
     private val investorRepository: InvestorRepository,
     private val historicCoinsRepository: HistoricCoinsRepository,
-    private val coinAPI:AboutCoinAPI,
-    private val coinRepository:CoinsRepository
+    private val coinAPI: AboutCoinAPI,
+    private val coinRepository: CoinsRepository
 ) : InvestorProjection {
 
     override fun singInInvestor(investorDTO: InvestorDTO) {
@@ -73,20 +75,30 @@ class InvestorService(
             investorRepository.save(investor)
 
 
-
         }
 
     }
 
-fun findHistoric()=investorRepository.findById(2).get().historicCoins
+    override fun deleteInvestor(loginInvestor: LoginInvestorDTO) {
+        if (loginInvestor.email != null && loginInvestor.password != null) {
+            var idInvestor: Long? = investorRepository.findIdInvestor(loginInvestor.email, loginInvestor.password)
+            if (idInvestor != null) {
 
-    override fun loginInvestor(investor: LoginInvestorDTO): InvestorDTO {
-        TODO("Not yet implemented")
+                investorRepository.deleteById(idInvestor)
+
+
+            } else {
+                //TODO exception Investor not exists
+            }
+
+
+        } else {
+            //TODO exception loginInvestor invalid
+        }
+
+
     }
 
-    override fun InsertCoins(investor: Investor): Boolean {
-        return false;
-    }
 
     private fun isEmailValid(email: String): Boolean {
         val emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$"
@@ -94,9 +106,10 @@ fun findHistoric()=investorRepository.findById(2).get().historicCoins
         val matcher = pattern.matcher(email)
         return matcher.matches()
     }
-    private fun validateInvestor(investor: InvestorDTO):Boolean{
-        if(investor!=null){
-            if(investor.email!=null && investor.name!=null && investor.coinMain!=null && investor.coinSecond!=null && investor.password!=null){
+
+    private fun validateInvestor(investor: InvestorDTO): Boolean {
+        if (investor != null) {
+            if (investor.email != null && investor.name != null && investor.coinMain != null && investor.coinSecond != null && investor.password != null) {
                 return true
             }
         }
@@ -104,22 +117,20 @@ fun findHistoric()=investorRepository.findById(2).get().historicCoins
 
     }
 
-    fun returnAPI(currency: String):ReturnJsonApi {
+    fun returnAPI(currency: String): ReturnJsonApi {
         println(currency)
-        val stringRemove:String=currency+"BRL"
-        val inputJson:String =coinAPI.getCurrency(currency)
+        val stringRemove: String = currency + "BRL"
+        val inputJson: String = coinAPI.getCurrency(currency)
         val startIndex = inputJson.indexOf('{')
         val endIndex = inputJson.lastIndexOf('}')
 
-            val jsonPart = inputJson.substring(startIndex + 1, endIndex)
-            val jsonWithoutCoin = jsonPart.replace("\"$stringRemove\":", "")
+        val jsonPart = inputJson.substring(startIndex + 1, endIndex)
+        val jsonWithoutCoin = jsonPart.replace("\"$stringRemove\":", "")
 
-            val objectMapper: ObjectMapper = ObjectMapper()
-            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            val currency: ReturnJsonApi = objectMapper.readValue(jsonWithoutCoin, ReturnJsonApi::class.java)
-            return currency
-
-
+        val objectMapper: ObjectMapper = ObjectMapper()
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+        val currency: ReturnJsonApi = objectMapper.readValue(jsonWithoutCoin, ReturnJsonApi::class.java)
+        return currency
 
 
     }
