@@ -2,12 +2,12 @@ package com.investor.api.services
 
 
 import com.investor.api.dtos.LoginInvestorDTO
-import com.investor.api.dtos.ReturnHistoricCoinsDTO
 import com.investor.api.dtos.ReturnHistoricEmailsDTO
 import com.investor.api.entities.Email
-import com.investor.api.entities.HistoricCoins
 import com.investor.api.entities.HistoricEmails
 import com.investor.api.entities.Investor
+import com.investor.api.exceptions.InvestorNotExistsException
+import com.investor.api.exceptions.LoginInvestorException
 import com.investor.api.projections.HistoricEmailsProjection
 import com.investor.api.repositories.EmailRepository
 import com.investor.api.repositories.HistoricEmailsRepository
@@ -103,12 +103,12 @@ class EmailService(
 
 
             } else {
-                //TODO exception Investor not exists
+                throw InvestorNotExistsException("Investor nor exists")
             }
 
 
         } else {
-            //TODO exception loginInvestor invalid
+            throw LoginInvestorException("Investor invalid")
         }
 
         return null
