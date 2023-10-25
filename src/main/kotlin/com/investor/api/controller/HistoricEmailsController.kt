@@ -5,6 +5,7 @@ import com.investor.api.dtos.ReturnHistoricCoinsDTO
 import com.investor.api.dtos.ReturnHistoricEmailsDTO
 import com.investor.api.services.EmailService
 import com.investor.api.services.HistoricCoinsService
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -19,4 +20,10 @@ class HistoricEmailsController(private val historicEmailsService: EmailService) 
         return historicEmailsService.listEmailsInvestor(investor)
 
     }
+    @GetMapping("/a")
+    fun getCoin2() {
+        historicEmailsService.sendEmailInvestors()
+
+    }
+
 }

@@ -17,6 +17,7 @@ import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
 import java.sql.Date
+import java.text.SimpleDateFormat
 import java.util.*
 
 @Service
@@ -28,9 +29,12 @@ class EmailService(
     private val historicCoins: HistoricCoinsService
 ) : HistoricEmailsProjection {
     override fun sendEmail(dataInvestor: Investor): Boolean {
+        val date=Date(Calendar.getInstance().timeInMillis)
+        val formatBrasil = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
+        val dateFormat= formatBrasil.format(date)
         var aboutEmail: List<String> = textEmail(dataInvestor)
         var subject: String =
-            "Email send day : ${Date(Calendar.getInstance().timeInMillis)} about coins: ${dataInvestor.coinMainName} and ${dataInvestor.coinSecondName} "
+            "Email send day : ${dateFormat} about coins : ${dataInvestor.coinMainName} and ${dataInvestor.coinSecondName} "
         var msg = SimpleMailMessage()
         msg.setTo(dataInvestor.email)
         msg.setSubject(subject)
@@ -151,24 +155,29 @@ class EmailService(
             coinValueHighestName = dataInvestor.coinMainName
             coinValueLowestName = dataInvestor.coinSecondName
         }
+
+
+        val date=Date(Calendar.getInstance().timeInMillis)
+        val formatBrasil = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR"))
+        val dateFormat= formatBrasil.format(date)
         var stringEmail: String
         if (coinValueHighestName.equals("equals")) {
             stringEmail =
-                "Hello ${dataInvestor.name}.Today day:${Date(Calendar.getInstance().timeInMillis)} your coins has the following price: \n" +
-                        "Coin main:${dataInvestor.coinMainName} price: ${dataInvestor.coinMainPrice}. Coin second:${dataInvestor.coinSecondName} price: ${dataInvestor.coinSecondPrice}  \n " +
-                        "And the percent of relation between : Coin main: ${dataInvestor.coinMainPrice} is 0 % more valued that Coin second: ${dataInvestor.coinSecondPrice}, therefore they have the same price today " +
-                        "Email send by Spring boot " +
-                        "Date send: ${Date(Calendar.getInstance().timeInMillis)} "
+                "Hello ${dataInvestor.name}. Today day :${dateFormat} your coins has the following price: \n" +
+                        "Coin main :${dataInvestor.coinMainName} price : ${dataInvestor.coinMainPrice}. Coin second :${dataInvestor.coinSecondName} price : ${dataInvestor.coinSecondPrice}  \n " +
+                        "And the percent of relation between : Coin main : ${dataInvestor.coinMainPrice} is 0 % more valued that Coin second : ${dataInvestor.coinSecondPrice}, therefore they have the same price today \n " +
+                        "Email send by Spring boot \n" +
+                        "Date send: ${dateFormat} "
             percentCoinUser =
                 "${dataInvestor.coinMainName}: R$ ${dataInvestor.coinMainPrice} is 0 % more valued that:R$ ${dataInvestor.coinSecondName} ${dataInvestor.coinSecondPrice}"
 
         } else {
             stringEmail =
-                "Hello ${dataInvestor.name}.Today day:${Date(Calendar.getInstance().timeInMillis)} your coins has the following price: \n" +
-                        "Coin main:${dataInvestor.coinMainName} price: ${dataInvestor.coinMainPrice}. Coin second:${dataInvestor.coinSecondName} price: ${dataInvestor.coinSecondPrice}  \n " +
-                        "And the percent of relation between : Coin : ${coinValueHighestName} is $percentCoins % more valued that Coin: ${coinValueLowestName} " +
-                        "Email send by Spring boot " +
-                        "Date send: ${Date(Calendar.getInstance().timeInMillis)} "
+                "Hello ${dataInvestor.name}. Today day :${dateFormat} your coins has the following price: \n" +
+                        "Coin main :${dataInvestor.coinMainName} price : ${dataInvestor.coinMainPrice}. Coin second :${dataInvestor.coinSecondName} price : ${dataInvestor.coinSecondPrice}  \n" +
+                        "And the percent of relation between : Coin : ${coinValueHighestName} is $percentCoins % more valued that Coin : ${coinValueLowestName} \n" +
+                        "Email send by Spring boot \n" +
+                        "Date send: ${dateFormat} "
             percentCoinUser =
                 " ${coinValueHighestName} is $percentCoins % more valued that Coin: ${coinValueLowestName}"
         }
