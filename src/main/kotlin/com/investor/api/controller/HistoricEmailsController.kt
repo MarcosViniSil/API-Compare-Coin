@@ -20,10 +20,6 @@ class HistoricEmailsController(private val historicEmailsService: EmailService) 
         return historicEmailsService.listEmailsInvestor(investor)
 
     }
-    @GetMapping("/a")
-    fun getCoin2() {
-        historicEmailsService.sendEmailInvestors()
 
-    }
 
 }

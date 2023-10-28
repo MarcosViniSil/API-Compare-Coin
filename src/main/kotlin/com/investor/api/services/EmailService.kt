@@ -15,6 +15,7 @@ import com.investor.api.repositories.InvestorRepository
 import org.springframework.mail.MailException
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.sql.Date
 import java.text.SimpleDateFormat
@@ -75,7 +76,7 @@ class EmailService(
 
     }
 
-
+    @Scheduled(cron = "0 0 13 * * ?")
     override fun sendEmailInvestors() {
         historicCoins.updateCoins()
         var listInvestor: MutableList<Investor> = investorRepository.findAll()
