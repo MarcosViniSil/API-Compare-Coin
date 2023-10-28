@@ -37,6 +37,11 @@ dependencies {
 	testImplementation 'io.mockk:mockk:1.13.4'
 	runtimeOnly 'com.h2database:h2'
 }
+tasks.jar {
+	manifest {
+		attributes["Main-Class"] = "com.investor.api.Application.kt"
+	}
+}
 
 dependencyManagement {
 	imports {
