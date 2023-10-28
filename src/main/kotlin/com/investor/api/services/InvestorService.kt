@@ -102,14 +102,14 @@ class InvestorService(
     }
 
 
-    private fun isEmailValid(email: String): Boolean {
+     fun isEmailValid(email: String): Boolean {
         val emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$"
         val pattern = Pattern.compile(emailRegex)
         val matcher = pattern.matcher(email)
         return matcher.matches()
     }
 
-    private fun validateInvestor(investor: InvestorDTO): Boolean {
+     fun validateInvestor(investor: InvestorDTO): Boolean {
         if (investor != null) {
             if (investor.email != null && investor.name != null && investor.coinMain != null && investor.coinSecond != null && investor.password != null) {
                 if (isEmailValid(investor.email)) {
