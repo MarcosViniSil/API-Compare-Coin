@@ -7,6 +7,7 @@ import com.investor.api.dtos.InvestorDTO
 import com.investor.api.repositories.CoinsRepository
 import com.investor.api.repositories.HistoricCoinsRepository
 import com.investor.api.repositories.InvestorRepository
+import com.investor.api.services.EmailService
 import com.investor.api.services.InvestorService
 import io.mockk.*
 import io.mockk.junit5.MockKExtension
@@ -23,6 +24,8 @@ class InvestorServiceTest {
     @MockK lateinit var coinRepository :CoinsRepository
 
     @InjectMockKs lateinit var investorService :InvestorService
+    @InjectMockKs
+    lateinit var historicEmailsService : EmailService
 
     @Test
     fun `should return true because email is valid`(){
@@ -47,7 +50,6 @@ class InvestorServiceTest {
         var coin:String="USDr"
         Assertions.assertEquals(investorService.validateCoinsInvestor(coin),false)
     }
-
 
 
 

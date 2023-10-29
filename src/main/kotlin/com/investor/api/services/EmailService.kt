@@ -17,15 +17,14 @@ import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
 import java.sql.Date
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Service
 class EmailService(
     private val investorRepository: InvestorRepository,
-    private val historicEmailRepository: HistoricEmailsRepository,
     private val sendEmail: JavaMailSender,
-    private val emailRepository: EmailRepository,
     private val historicCoins: HistoricCoinsService
 ) : HistoricEmailsProjection {
     override fun sendEmail(dataInvestor: Investor): Boolean {
@@ -119,7 +118,7 @@ class EmailService(
     }
 
 
-    private fun findPercentInvestor(coinPriceMain: Double?, coinPriceSecond: Double?): Double {
+     fun findPercentInvestor(coinPriceMain: Double?, coinPriceSecond: Double?): Double {
         var percent: Double
         if (coinPriceMain!! > coinPriceSecond!!) {
             percent = (coinPriceSecond * 100) / coinPriceMain
@@ -129,10 +128,12 @@ class EmailService(
             return 0.0
         }
 
-        return 100 - percent
+        var percentWithoutRound:Double=percent
+        val formatador = DecimalFormat("#.###")
+        return formatador.format(percentWithoutRound).toDouble()
     }
 
-    private fun findHighestCoin(dataInvestor: Investor): String {
+     fun findHighestCoin(dataInvestor: Investor): String {
         if (dataInvestor.coinMainPrice!! > dataInvestor.coinSecondPrice!!) {
             return dataInvestor.coinMainName
         } else if (dataInvestor.coinMainPrice!! < dataInvestor.coinSecondPrice!!) {
@@ -142,7 +143,7 @@ class EmailService(
         }
     }
 
-    private fun textEmail(dataInvestor: Investor): List<String> {
+     fun textEmail(dataInvestor: Investor): List<String> {
         var percentCoins: Double = this.findPercentInvestor(dataInvestor.coinMainPrice, dataInvestor.coinSecondPrice)
         var coinValueHighestName: String = this.findHighestCoin(dataInvestor)
         var coinValueLowestName: String
