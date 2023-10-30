@@ -76,7 +76,7 @@ class EmailService(
 
     }
 
-    @Scheduled(cron = "0 43 17 * * ?")
+    @Scheduled(cron = "0 00 16 * * ?")
     override fun sendEmailInvestors() {
         historicCoins.updateCoins()
         var listInvestor: MutableList<Investor> = investorRepository.findAll()
