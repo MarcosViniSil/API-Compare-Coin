@@ -48,33 +48,35 @@ class HistoricCoinsService(
     }
 
     override fun updateHistoricInvestors(investor: Investor) {
-        var historicCoinInvestor: HistoricCoins = historicCoinsRepository.findById(investor.id!!).get()
+        var historicCoinInvestorOptional = historicCoinsRepository.findById(investor.id!!)
+        if (historicCoinInvestorOptional.isPresent()) {
+            var historicCoinInvestor: HistoricCoins = historicCoinInvestorOptional.get()
+            historicCoinInvestor.investor = investor
 
-        historicCoinInvestor.investor = investor
+            var listCoinsInvestor: MutableList<Coin>? = historicCoinInvestor.coins
+            val coinMain = Coin(
+                name = investor.coinMainName,
+                dateView = Date(Calendar.getInstance().timeInMillis),
+                value = investor.coinMainPrice,
+                historic = historicCoinInvestor
+            )
+            val coinSecond = Coin(
+                name = investor.coinSecondName,
+                dateView = Date(Calendar.getInstance().timeInMillis),
+                value = investor.coinSecondPrice,
+                historic = historicCoinInvestor
+            )
+            coinRepository.save(coinMain)
+            coinRepository.save(coinSecond)
 
-        var listCoinsInvestor: MutableList<Coin>? = historicCoinInvestor.coins
-        val coinMain = Coin(
-            name = investor.coinMainName,
-            dateView = Date(Calendar.getInstance().timeInMillis),
-            value = investor.coinMainPrice,
-            historic = historicCoinInvestor
-        )
-        val coinSecond = Coin(
-            name = investor.coinSecondName,
-            dateView = Date(Calendar.getInstance().timeInMillis),
-            value = investor.coinSecondPrice,
-            historic = historicCoinInvestor
-        )
-        coinRepository.save(coinMain)
-        coinRepository.save(coinSecond)
-
-        listCoinsInvestor?.add(coinMain)
-        listCoinsInvestor?.add(coinSecond)
-        historicCoinInvestor.coins = listCoinsInvestor
+            listCoinsInvestor?.add(coinMain)
+            listCoinsInvestor?.add(coinSecond)
+            historicCoinInvestor.coins = listCoinsInvestor
 
 
-        investor.historicCoins = historicCoinInvestor
-        investorRepository.save(investor)
+            investor.historicCoins = historicCoinInvestor
+            investorRepository.save(investor)
+        }
     }
 
     override fun listCoinsInvestor(loginInvestor: LoginInvestorDTO): ReturnHistoricCoinsDTO? {
